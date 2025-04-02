@@ -9,38 +9,37 @@
 
 ## 팀원 소개
 <table>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/jigun058"><br /><sub><b> 이태권 </b></sub></a><br /></td>
-    </tr>
-  </tbody>
-</table>
-<table>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/ktollonr"><br /><sub><b> 최정혁 </b></sub></a><br /></td>
-    </tr>
-  </tbody>
-</table>
-<table>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/uukdo"><br /><sub><b> 장지원 </b></sub></a><br /></td>
-    </tr>
-  </tbody>
-</table>
-<table>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/sungj1n"><br /><sub><b> 박성진 </b></sub></a><br /></td>
-    </tr>
-  </tbody>
-</table>
-<table>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/in-su03"><br /><sub><b> 배인수 </b></sub></a><br /></td>
-    </tr>
-  </tbody>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/jigun058">
+        <img src="https://github.com/jigun058.png" width="100px;" alt="jigun058"/><br />
+        <sub><b>이태권</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/ktollonr">
+        <img src="https://github.com/ktollonr.png" width="100px;" alt="ktollonr"/><br />
+        <sub><b>최정혁</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/uukdo">
+        <img src="https://github.com/uukdo.png" width="100px;" alt="uukdo"/><br />
+        <sub><b>장지원</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/sungj1n">
+        <img src="https://github.com/sungj1n.png" width="100px;" alt="sungj1n"/><br />
+        <sub><b>박성진</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/in-su03">
+        <img src="https://github.com/in-su03.png" width="100px;" alt="in-su03"/><br />
+        <sub><b>배인수</b></sub>
+      </a>
+    </td>
+  </tr>
 </table>
 
