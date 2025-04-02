@@ -66,25 +66,27 @@ C언어로 Mini Shell과 Mini DBMS를 구현하면서 운영체제와 백엔드 
 
 ---
 
-## 📌 디렉터리 구조
+## 📁 디렉터리 구조
 
+```
 minishell/
 ├── include/              # 전역 헤더 파일
 │   └── minishell.h
-├── lib/                  # 외부 라이브러리, 공용 유틸 함수 (예정)
-├── src/                  # 소스 코드
+├── lib/                  # 외부 라이브러리, 공용 유틸 함수
+├── src/
 │   ├── shell/            # Shell 관련 로직
-│   │   ├── parser/       # 명령어 파싱, 토큰화
-│   │   ├── builtin/      # 내장 명령어 (cd, echo 등)
-│   │   ├── executor/     # 명령 실행, 프로세스 처리
-│   │   ├── utils/        # 문자열 유틸, 에러 처리 등
-│   │   └── main.c        # minishell 진입점 (REPL)
+│   │   ├── parser/       # 명령어 파싱
+│   │   ├── builtin/      # 내장 명령어
+│   │   ├── executor/     # 명령 실행, 리디렉션, 파이프
+│   │   ├── utils/        # 문자열 유틸, 에러 처리
+│   │   └── main.c        # Shell 진입점 (REPL)
 │   └── dbms/             # DBMS 관련 로직
-│       ├── parser/       # SQL-like 문법 해석
-│       ├── engine/       # DB 실행 로직, 트랜잭션, 쿼리 처리
-│       ├── storage/      # 파일 기반 데이터 저장/로드
-│       └── utils/        # 테이블 처리, 출력 유틸 등
+│       ├── parser/       # SQL-like 쿼리 해석
+│       ├── engine/       # 명령 실행 로직
+│       ├── storage/      # 파일 기반 저장소
+│       └── utils/        # 테이블 유틸 함수
 ├── Makefile              # 빌드 설정
+```
 
 ---
 
@@ -106,7 +108,7 @@ minishell/
 
 ---
 
-## 🚀 실행 방법 (예시)
+## 🚀 실행 방법
 
 ```bash
 # 1. 저장소 클론
