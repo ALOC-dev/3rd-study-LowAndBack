@@ -48,6 +48,7 @@ int runApp(int argc, char **argv, char **envp) {
     char *input = readLine();
     ParsedCommand *command = parseCommand(input);
     
+    // 내부/외장 명령 실행
     ExecResult result;
     if (isBuiltin(command->keyword)) {
       result = executeBuiltin(command);
@@ -55,6 +56,7 @@ int runApp(int argc, char **argv, char **envp) {
       result = executeExternal(command);
     }
 
+    // 메모리 할당 해제
     freeParsedCommand(command);
     free(input);
 

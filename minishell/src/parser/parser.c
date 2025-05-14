@@ -3,7 +3,8 @@
 #include <string.h>
 
 #include <../include/parser.h>
-
+/*
 ParsedCommand *parseCommand(const char *input) {
-    
+
 }
+*/

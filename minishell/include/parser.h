@@ -7,6 +7,6 @@ typedef struct {
   int argc;
 } ParsedCommand;
 
-ParsedCommand *parseCommand(char *input);
+ParsedCommand *parseCommand(const char *input);
 
 #endif
