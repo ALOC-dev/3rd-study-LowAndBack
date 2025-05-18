@@ -42,6 +42,7 @@ char *readLine() {
 
 int runApp(int argc, char **argv, char **envp) {
   while (true) {
+    // 프롬프트 출력
     printf("minishell > ");
 
     // 입력을 읽은 뒤 parsing

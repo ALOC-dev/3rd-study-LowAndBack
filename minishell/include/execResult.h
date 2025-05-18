@@ -1,5 +1,5 @@
-#ifndef EXECUTION_H
-#define EXECUTION_H
+#ifndef EXECRESULT_H
+#define EXECRESULT_H
 
 typedef enum {
     EXEC_OK,

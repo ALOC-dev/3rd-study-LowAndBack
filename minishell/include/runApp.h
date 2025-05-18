@@ -1,5 +1,5 @@
-#ifndef runApp_H
-#define runApp_H
+#ifndef RUNAPP_H
+#define RUNAPP_H
 
 int runApp(int argc, char **argv, char **envp);
 
