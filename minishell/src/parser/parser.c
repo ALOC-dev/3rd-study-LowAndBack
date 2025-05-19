@@ -6,46 +6,47 @@
 typedef struct ArgNode{
     char* arg;
     struct ArgNode* next;
-}ArgNode;
+}ArgNode;                    
 
 typedef struct LinkedList{
     ArgNode* head;
     int size;
-}List;
+}List;                        
 
 typedef struct ParsedCommand{
-    char keyword;
+    char* keyword;
     List args;
     int argc;
     struct ParsedCommand* next;
-}ParsedCommand;
+}ParsedCommand;                
 
 
 ParsedCommand* init_command(){
     ParsedCommand* command = (ParsedCommand*)malloc(sizeof(ParsedCommand));
     command->next = NULL;
     command->argc = 0;
-    return command;
+    return command;            
 }
 
 ArgNode* create_Node(char* e){
     ArgNode* node = (ArgNode*)malloc(sizeof(ArgNode));
     node->arg = strdup(e);
     node->next = NULL;
-    return node;
+    return node;           
 }
+
 int isListEmpty(List* L){
-    return L->head == NULL;
+    return L->head == NULL;   
 }
 
 void append_Node(List* L, char* e){
-    ArgNode* node = create_Node(e);
+    ArgNode* node = create_Node(e);  
     if (isListEmpty(L))
     {
         L->head = node;
         node->next = NULL;
-        L->size++;
-    } 
+        L->size++;               
+    }                               
     else{
         ArgNode* p = L->head;
         while(p->next)
@@ -76,7 +77,3 @@ ParsedCommand* parse_input(const char* input){
     
     return cmd;
 }
-
-
-
-
