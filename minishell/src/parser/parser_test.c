@@ -11,51 +11,46 @@ typedef struct ParsedCommand {
     ArgNode* arg_list;
     char* command;
     int argc;
-    struct ParsedCommand* command_list;
 } ParsedCommand;
-
-typedef struct CommandList {
-    ParsedCommand* cmd_list;
-    int command_count;
-} cmdL;
 
 void initCmd(ParsedCommand* P) {
     P -> arg_list = NULL;
     P -> command = NULL;
     P -> argc = 0;
-    P -> command_list = NULL;
 }
 
 ParsedCommand* parse_input(const char* input) {
     ParsedCommand* cmd = malloc(sizeof(ParsedCommand));
-    ArgNode* new_node = malloc(sizeof(ArgNode));
-    ArgNode* last_node = NULL;
-
     initCmd(cmd);
 
-    char* copy = strdup(input); // 복사
-    char* token = strtok(copy, " "); // 공백 기준으로 문자열 분리
+    char* copy = strdup(input);
+    char* token = strtok(copy, " ");
+
+    ArgNode* last_node = NULL;
 
     while (token) {
-        if (!(cmd->command)) { // 연결리스트가 비어있다면 true (첫번째 노드라면)
-            cmd -> command = strdup(token); // 첫번째 단어이므로 명령어에 저장
-        } else {
-            new_node -> arg_str = strdup(token); // token으로 분리된 단어 저장
-            new_node -> next = NULL;
+        ArgNode* new_node = malloc(sizeof(ArgNode));
 
-            if(last_node == NULL) {
+        new_node -> arg_str = strdup(token);
+        new_node -> next = NULL;
+
+        if (!(cmd -> command)) {
+            cmd->command = strdup(token);
+        } else {
+            if (cmd -> arg_list == NULL) {
+                cmd -> arg_list = new_node;
                 last_node = new_node;
             } else {
-                last_node -> next = new_node; // 첫번째 노드가 아니라면 이전 node와 현재 노드와 연결
-                last_node = new_node; // 다음 들어올 노드와 이어주기 위해 last_node로 참조
+                last_node -> next = new_node;
+                last_node = new_node;
             }
             cmd -> argc++;
         }
-        token = strtok(NULL, " "); // NULL을 넣어주면 이미 분리된 문자열 그대로 사용함
+
+        token = strtok(NULL, " ");
     }
 
     free(copy);
-
     return cmd;
 }
 
@@ -74,7 +69,7 @@ int main(void) {
             printf("argc: %d\n", cmd -> argc);
 
             ArgNode* node = cmd -> arg_list;
-            
+
             while (node) {
                 printf("arg: %s\n", node -> arg_str);
                 node = node -> next;
