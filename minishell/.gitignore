@@ -1,0 +1,12 @@
+# macOS 시스템 파일
+.DS_Store
+
+# 컴파일 결과물
+minishell
+a.out
+*.o
+*.gch
+
+# 편집기 임시파일
+*~
+*.swp
