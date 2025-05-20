@@ -17,8 +17,10 @@ int main(void) {
             builtin_echo(cmd);
         } else if (strcmp(cmd->command, "pwd") == 0) {
             builtin_pwd(cmd);
+        } else if (strcmp(cmd->command, "exit") == 0) {
+            builtin_exit(cmd);
         } else {
-            printf("unknown command: %s\n", cmd->command);
+            printf("minishell: command not found: %s\n", cmd->command);
         }
     }
 
