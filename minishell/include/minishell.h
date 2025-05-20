@@ -18,16 +18,15 @@ typedef struct ParsedCommand {
     int argc;
 } ParsedCommand;
 
-
 // parser
 void initCmd(ParsedCommand* P);
 ParsedCommand* parse_input(const char* input);
 
 // builtin
-void builtin_echo(ParsedCommand* cmd); // echo
-void builtin_pwd(ParsedCommand* cmd); // pwd
-void builtin_exit(ParsedCommand* cmd); // exit
-void builtin_cd(ParsedCommand* cmd); // cd
-void builtin_type(ParsedCommand* cmd); // type
+void builtin_echo(ParsedCommand* cmd);
+void builtin_pwd(ParsedCommand* cmd);
+void builtin_exit(ParsedCommand* cmd);
+void builtin_cd(ParsedCommand* cmd);
+void builtin_type(ParsedCommand* cmd);
 
 #endif

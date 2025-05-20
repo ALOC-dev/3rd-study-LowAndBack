@@ -4,7 +4,8 @@ int main(void) {
     char input[1024];
 
     while (1) {
-        printf("minishell >> ");
+        char route[1024];
+        printf("minishell [%s] >> ", getcwd(route, sizeof(route)));
 
         if (fgets(input, sizeof(input), stdin) == NULL)
             break;
@@ -19,6 +20,8 @@ int main(void) {
             builtin_pwd(cmd);
         } else if (strcmp(cmd->command, "exit") == 0) {
             builtin_exit(cmd);
+        } else if (strcmp(cmd->command, "cd") == 0) {
+            builtin_cd(cmd);
         } else {
             printf("minishell: command not found: %s\n", cmd->command);
         }

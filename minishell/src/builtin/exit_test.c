@@ -1,9 +1,6 @@
 #include "minishell.h"
 
 void builtin_exit(ParsedCommand* cmd) {
-    // if (strcmp(cmd->command, "exit") != 0)
-    //     return;
-
     ArgNode* arg = cmd -> arg_list;
 
     if (cmd -> argc == 0) {
