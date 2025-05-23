@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../include/parser.h"
 #include "../include/execResult.h"
+#include "../include/builtinList.h"
+#include "../include/builtin.h"
+#include "../include/executor.h"
 
 #define true 1
+#define false 0
 
 // 입력을 버퍼에 저장
 char *readLine() {
@@ -35,19 +40,41 @@ char *readLine() {
     }
   }
 
-  // newLine 또는 EOF에 도달한 경우
-  buffer[length] = '\0';
+  // newLine에 도달한 경우
+  if (length > 0 && buffer[length - 1] == '\n') {
+    buffer[length - 1] = '\0';  // newLine 제거
+  }
   return buffer;
+}
+
+int isBuiltin(const char *keyword) {
+  int builtinCount = sizeof(builtinList) / sizeof(builtinList[0]);
+  for (int i = 0; i < builtinCount; i++) {
+    if (strcmp(keyword, builtinList[i]) == 0) {
+      return true;  // 내장 명령어
+    }
+  }
+  return false;  // 외장 명령어
 }
 
 int runApp(int argc, char **argv, char **envp) {
   while (true) {
     // 프롬프트 출력
     printf("minishell > ");
+    fflush(stdout);
 
     // 입력을 읽은 뒤 parsing
     char *input = readLine();
     ParsedCommand *command = parseCommand(input);
+
+    // 디버깅용
+    if (strcmp(command->keyword, "ptest") == 0) {
+      testParsingCommand(input);
+      
+      freeParsedCommand(command);
+      free(input);
+      continue;
+    }
     
     // 내부/외장 명령 실행
     ExecResult result;
@@ -57,12 +84,14 @@ int runApp(int argc, char **argv, char **envp) {
       result = executeExternal(command);
     }
 
+    // 명령어 실행 실패
+    if (result == EXEC_ERROR) {
+      fprintf(stderr, "Error occured while executing command: %s\n", command->keyword);
+    }
+
     // 메모리 할당 해제
     freeParsedCommand(command);
     free(input);
-
-    // exit
-    if (result == EXEC_EXIT) break;
   }
 
   return 0;

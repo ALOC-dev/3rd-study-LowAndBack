@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/parser.h"
+#include "../../include/parser.h"
 
 void initParsedCommand(ParsedCommand* command) {
   command->keyword = NULL;
@@ -52,6 +52,11 @@ ParsedCommand* parseCommand(char *input) {
   char* token = strtok(input, " ");
   if (token) {
     command->keyword = strdup(token);
+    if (!command->keyword) {
+      fprintf(stderr, "Failed to strdup keyword\n");
+      free(command);
+      return NULL;
+    }
   } else {
     free(command);
     return NULL;
