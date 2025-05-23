@@ -7,6 +7,7 @@
 #include "../include/builtinList.h"
 #include "../include/builtin.h"
 #include "../include/executor.h"
+#include "../include/utils.h"
 
 #define true 1
 #define false 0
@@ -65,13 +66,14 @@ int runApp(int argc, char **argv, char **envp) {
 
     // 입력을 읽은 뒤 parsing
     char *input = readLine();
+    char *inputCopy = strdup(input);  // testParsingCommand()에서 사용
     ParsedCommand *command = parseCommand(input);
 
     // 디버깅용
     if (strcmp(command->keyword, "ptest") == 0) {
-      testParsingCommand(input);
-      
+      testParsingCommand(inputCopy);
       freeParsedCommand(command);
+      free(inputCopy);
       free(input);
       continue;
     }
@@ -91,6 +93,7 @@ int runApp(int argc, char **argv, char **envp) {
 
     // 메모리 할당 해제
     freeParsedCommand(command);
+    free(inputCopy);
     free(input);
   }
 
