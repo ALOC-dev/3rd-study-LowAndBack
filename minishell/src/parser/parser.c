@@ -25,7 +25,7 @@ ArgNode* makeNode(char* arg) {
 void appendArg(ParsedCommand* command, char* arg) {
   ArgNode* newNode = makeNode(arg);
   if (!newNode) {
-    return; // 에러는 makenode()에서 처리
+    return;
   }
 
   if (command->args == NULL) {
