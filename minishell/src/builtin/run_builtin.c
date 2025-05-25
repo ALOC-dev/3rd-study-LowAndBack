@@ -26,9 +26,10 @@ int is_builtin(ParsedCommand* cmd) {
     return 0;
 }
 
+
 int run_builtin(ParsedCommand *cmd) {
     for (size_t i = 0; i < sizeof(builtins)/sizeof(*builtins); i++) {
-        if (is_builtin(cmd)) {
+        if (strcmp(cmd->keyword, builtins[i].name) == 0) {
             return builtins[i].fn(cmd);
         }
     }

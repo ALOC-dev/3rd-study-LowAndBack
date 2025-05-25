@@ -19,8 +19,8 @@ int main(void) {
 
         // 파싱
         ParsedCommand *cmd = parse_input(line);
-        print_parsed_command(cmd);
-        //run_builtin(cmd);
+        //print_parsed_command(cmd);
+        run_builtin(cmd);
         
         
         
