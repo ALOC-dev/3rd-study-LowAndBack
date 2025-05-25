@@ -6,7 +6,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <ctype.h>
-
+#include <sys/types.h>
+#include <sys/wait.h>
+// 기본 연결리스트
 typedef struct ArgNode {
     char* arg_str;
     struct ArgNode* next;
@@ -30,7 +32,9 @@ void builtin_cd(ParsedCommand* cmd);
 void builtin_type(ParsedCommand* cmd);
 
 // executor
-void execute_builtin(ParsedCommand* cmd);
+int execute_builtin(ParsedCommand* cmd);
+void execute_command(ParsedCommand* cmd);
+void execute_external(ParsedCommand* cmd);
 
 typedef void (*BuiltinFunc)(ParsedCommand*);
 
@@ -40,6 +44,5 @@ typedef struct builtin_func{
 } b_func;
 
 extern b_func builtins[];
-
 
 #endif

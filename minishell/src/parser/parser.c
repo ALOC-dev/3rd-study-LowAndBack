@@ -1,5 +1,11 @@
 #include "minishell.h"
 
+void initCmd(ParsedCommand* P) {
+    P -> arg_list = NULL;
+    P -> command = NULL;
+    P -> argc = 0;
+}
+
 ParsedCommand* parse_input(const char* input) {
     ParsedCommand* cmd = malloc(sizeof(ParsedCommand));
     initCmd(cmd);
@@ -33,10 +39,4 @@ ParsedCommand* parse_input(const char* input) {
 
     free(copy);
     return cmd;
-}
-
-void initCmd(ParsedCommand* P) {
-    P -> arg_list = NULL;
-    P -> command = NULL;
-    P -> argc = 0;
 }

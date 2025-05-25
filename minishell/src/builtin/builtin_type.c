@@ -7,7 +7,7 @@ void builtin_type(ParsedCommand* cmd) {
         int found = 0;
 
         for (int i = 0; builtins[i].name != NULL; i++) {
-            if (strcmp(arg->arg_str, builtins[i].name) == 0) {
+            if (strcmp(arg -> arg_str, builtins[i].name) == 0) {
                 printf("%s is a shell builtin\n", arg->arg_str);
                 found = 1;
                 break;
