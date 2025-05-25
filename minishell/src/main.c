@@ -22,8 +22,6 @@ int main(void) {
         //print_parsed_command(cmd);
         run_builtin(cmd);
         
-        
-        
         // 메모리 해제
         free_parsed_command(cmd);
     }

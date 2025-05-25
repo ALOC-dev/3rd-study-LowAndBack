@@ -12,7 +12,6 @@ static Builtin builtins[] = {
     {"cd", builtin_cd},
     {"pwd", builtin_pwd},
     {"echo", builtin_echo},
-    {"env", builtin_env},
     {"exit", builtin_exit},
     {"type", builtin_type}
 };

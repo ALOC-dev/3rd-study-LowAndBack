@@ -3,7 +3,7 @@
 #include "builtin.h"
 
 int builtin_type(ParsedCommand* cmd){
-    if (is_builtin(cmd->keyword))
+    if (is_builtin(cmd))
     {
         printf("%s is a shell builtin", cmd->keyword);
         return 0;
