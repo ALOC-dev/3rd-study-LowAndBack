@@ -1,7 +1,4 @@
 #include "minishell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 // 문자열을 공백 기준으로 나누는 함수
 char **split_tokens(char *line, int *argc_out) {
