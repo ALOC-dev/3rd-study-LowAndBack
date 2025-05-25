@@ -5,13 +5,16 @@
 #include "parser.h"
 #include "builtin.h"
 
+typedef int (*builtin_fn)(ParsedCommand *cmd);
+
+int builtin_echo(ParsedCommand* cmd);
+int builtin_pwd(ParsedCommand* cmd);
+int builtin_cd(ParsedCommand* cmd);
+int builtin_env(ParsedCommand* cmd);
+int builtin_exit(ParsedCommand* cmd);
+int builtin_type(ParsedCommand* cmd);
+
 int is_builtin(ParsedCommand* cmd);
-int builtin_echo(List* L);
-int builtin_pwd();
-int builtin_cd(List* L);
-int builtin_env();
-void builtin_exit(List* L);
 int run_builtin(ParsedCommand* cmd);
-void builtin_type(List* L);
 
 #endif

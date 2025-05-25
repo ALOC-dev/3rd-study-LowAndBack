@@ -3,8 +3,8 @@
 #include <unistd.h>
 #include "parser.h"
 
-int builtin_cd(List* L){                    // 리스트를 매개변수로 입력받음
-    ArgNode* p = L->head;                   // 리스트의 head를 가르키는 포인터 선언
+int builtin_cd(ParsedCommand* cmd){                    // 리스트를 매개변수로 입력받음
+    ArgNode* p = cmd->args;                   // 리스트의 head를 가르키는 포인터 선언
     if (!p)                                 // 만약 head가 비어있다면
     {
         char* home = getenv("HOME");        // getenv로 홈 디렉토리를 home 문자열에 저장

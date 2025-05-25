@@ -2,14 +2,11 @@
 #include "parser.h"
 #include "builtin.h"
 
-void builtin_type(List* L){
-    ArgNode* p = L->head;
-    if (is_builtin(L))
+int builtin_type(ParsedCommand* cmd){
+    if (is_builtin(cmd->keyword))
     {
-        printf("%s is a shell builtin", p->arg);
-        return;
+        printf("%s is a shell builtin", cmd->keyword);
+        return 0;
     }
-    
-    
     
 }

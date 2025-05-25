@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include "builtin.h"
 
-int builtin_env(){
+int builtin_env(ParsedCommand* cmd){
     extern char **environ;                          
     for (int i = 0; environ[i] != NULL; i++)
     {

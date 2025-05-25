@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include "parser.h"
 
-int builtin_echo(List* L){
-    ArgNode* p = L->head;                                           // 리스트의 head를 가르키는 노드 포인터 선언
+int builtin_echo(ParsedCommand* cmd){
+    ArgNode* p = cmd->args;                                           // 리스트의 head를 가르키는 노드 포인터 선언
     if (!p)                                                         // 만약 리스트가 비어있다면(NULL) 
     {
         putchar('\n');                                              // 개행문자 출력 후 종료

@@ -24,15 +24,15 @@ int is_number_str(const char* a){
     }
     return 1;   
 }
-void builtin_exit(List* L){
-    ArgNode* p = L->head;
-    if (L->size == 0){
+int builtin_exit(ParsedCommand* cmd){
+    ArgNode* p = cmd->args;
+    if (cmd->argc == 0){
         exit(0);
     }
 
-    if (L->size>1){
+    if (cmd->argc>1){
         fprintf(stderr, "too many arguments\n");
-        return;
+        return 0;
     }
 
     if (is_number_str(p->arg))
@@ -42,4 +42,6 @@ void builtin_exit(List* L){
         fprintf(stderr, "numeric argument required\n");
         exit(255);
     }
+
+    return 0;
 }

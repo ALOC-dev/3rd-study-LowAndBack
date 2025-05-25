@@ -8,15 +8,9 @@ typedef struct ArgNode {
 } ArgNode;
 
 
-typedef struct LinkedList {
-    ArgNode* head;
-    int size;
-} List;
-
-
 typedef struct ParsedCommand {
     char* keyword;
-    List* args;
+    ArgNode* args;
     int argc;
     struct ParsedCommand* next;
 } ParsedCommand;
@@ -24,8 +18,10 @@ typedef struct ParsedCommand {
 // 함수 선언
 ParsedCommand* init_command();
 ArgNode* create_Node(char* e);
-int isListEmpty(List* L);
-void append_Node(List* L, char* e);
+int isListEmpty(ParsedCommand* cmd);
+void append_Node(ParsedCommand* cmd, char* e);
 ParsedCommand* parse_input(const char* input);
+void print_parsed_command(const ParsedCommand* cmd);
+void free_parsed_command(const ParsedCommand* cmd);
 
 #endif
