@@ -1,27 +1,16 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -g -I./include
 
-NAME = minishell
+SRCS = main.c \
+       src/parser/parser.c \
+       src/executor/executor.c \
+       src/builtin/builtin.c
 
-SRCS = main.c executor.c builtin.c parser.c
 OBJS = $(SRCS:.c=.o)
+TARGET = minishell
 
-HEADERS = executor.h builtin.h parser.h
-
-all: $(NAME)
-
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
-
-%.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
 clean:
-	rm -f $(OBJS)
-
-fclean: clean
-	rm -f $(NAME)
-
-re: fclean all
-
-.PHONY: all clean fclean re
+	rm -f $(OBJS) $(TARGET)

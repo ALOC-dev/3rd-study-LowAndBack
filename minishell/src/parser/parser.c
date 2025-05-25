@@ -30,6 +30,19 @@ void add_arg(ParsedCommand *cmd, const char *arg_str) {
     } cmd->argc++;
 }
 
+void free_parsed_command(ParsedCommand *cmd) {
+    if (!cmd) return;
+    ArgNode *cur = cmd->args;
+    while (cur) {
+        ArgNode *next = cur->next;
+        free(cur->arg);
+        free(cur);
+        cur = next;
+    }
+    free(cmd->keyword);
+    free(cmd);
+}
+
 // 입력 문자열을 구조체로 변환
 ParsedCommand *parse_input(const char *input) {
     char *input_copy = strdup(input);
@@ -70,17 +83,4 @@ void print_command(ParsedCommand *cmd) {
         printf("Arg: %s\n", cur->arg);
         cur = cur->next;
     }
-}
-
-int main() {
-    char input[100];
-    printf("put >");
-    fgets(input, sizeof(input), stdin);
-
-    input[strcspn(input, "\n")] = '\0';     //줄바꿈 문자 X
-
-    ParsedCommand *cmd = parse_input(input);
-    print_command(cmd);
-
-    return 0;
 }

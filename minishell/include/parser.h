@@ -25,6 +25,7 @@ void add_arg(ParsedCommand *cmd, const char *arg_str);
  * @return 동적 할당된 ParsedCommand 포인터 (사용 후 해제 필요)
  */
 ParsedCommand *parse_input(const char *input);
+void free_parsed_command(ParsedCommand *cmd);
 
 /**
  * 파싱된 명령어 내용을 출력

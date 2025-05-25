@@ -43,6 +43,7 @@ void shell_echo(char **args) {
 }
 
 void shell_pwd(char **args) {
+    (void)args;
     char cwd[1024];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
         printf("%s\n", cwd);
@@ -62,6 +63,7 @@ void shell_cd(char **args) {
 }
 
 void shell_exit(char **args) {
+    (void)args;
     printf("exit shell\n");
     exit(0);
 }
@@ -134,8 +136,4 @@ void shell_loop() {
     free(line);
 }
 
-// 메인 함수
-int main() {
-    shell_loop();
-    return 0;
-}
+

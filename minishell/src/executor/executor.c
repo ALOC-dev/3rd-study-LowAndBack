@@ -1,43 +1,46 @@
-// executor.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <errno.h>
+#include <string.h> 
 
-void execute_command(char *const args[]) {
-    // 명령어가 비어 있는 경우
+int execute_command(char *const args[]) {
     if (args == NULL || args[0] == NULL) {
-        fprintf(stderr, "Error : no command provided \n");
-        return;
+        fprintf(stderr, "Error: no command provided\n");
+        return 0;
+    }
+
+
+    if (strcmp(args[0], "exit") == 0) {
+        return -1;
     }
 
     pid_t pid = fork();
-
     if (pid < 0) {
         perror("fork failed");
-        return;
+        return 0;
     } else if (pid == 0) {
         execvp(args[0], args);
-
-        // execvp가 반환되었다면 실패한 것임
         perror("execvp failed");
         exit(EXIT_FAILURE);
     } else {
         int status;
         if (waitpid(pid, &status, 0) == -1) {
             perror("waitpid failed");
-            return;
+            return 0;
         }
 
-        // 자식 프로세스가 정상 종료되었는지 확인
         if (WIFEXITED(status)) {
             int exit_status = WEXITSTATUS(status);
             if (exit_status != 0) {
                 fprintf(stderr, "Command exited with status %d\n", exit_status);
             }
+            return exit_status;
         } else if (WIFSIGNALED(status)) {
             fprintf(stderr, "Command terminated by signal %d\n", WTERMSIG(status));
+            return 0;
         }
     }
+
+    return 0;
 }
