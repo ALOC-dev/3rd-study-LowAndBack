@@ -4,6 +4,6 @@
 #include "execResult.h"
 #include "parser.h"
 
-ExecResult executeExternal(ParsedCommand* command);
+ExecResult executeExternal(const ParsedCommand* command);
 
 #endif

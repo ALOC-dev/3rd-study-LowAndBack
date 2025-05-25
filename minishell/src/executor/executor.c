@@ -8,53 +8,56 @@
 #include "../include/parser.h"
 #include "../include/execResult.h"
 
-ExecResult executeExternal(ParsedCommand *cmd) {
-  // 1. execvp에 넘길 argv 배열 생성
-  char **argv = malloc(sizeof(char *) * (cmd->argc + 2));  // +1 for keyword, +1 for NULL
+ExecResult executeExternal(const ParsedCommand *command) {
+  // execvp에 넘길 argv 배열 생성
+  char **argv = malloc(sizeof(char *) * (command->argc + 2));  // args + keyword + NULL
   if (!argv) {
-    perror("malloc failed");
+    perror("memory allocation failed");
     return EXEC_ERROR;
   }
 
-  argv[0] = strdup(cmd->keyword);  // 명령어 자체
-  ArgNode *current = cmd->args;
+  argv[0] = strdup(command->keyword);
+
+  ArgNode *current = command->args;
   int i = 1;
   while (current) {
-    argv[i++] = strdup(current->arg);
+    argv[i] = strdup(current->arg);
+    i++;
     current = current->next;
   }
+
   argv[i] = NULL;  // 마지막은 NULL로 종료
 
-  // 2. 자식 프로세스 생성
+  // 자식 프로세스 생성
   pid_t pid = fork();
   if (pid < 0) {
     perror("fork failed");
     return EXEC_ERROR;
   }
 
+  // 자식 프로세스는 이곳으로
   if (pid == 0) {
-    // 자식 프로세스에서 명령 실행
-    execvp(cmd->keyword, argv);
-    perror("execvp failed");  // exec 실패 시만 도달
-    exit(127);  // "command not found"에 해당하는 종료 코드
+    execvp(command->keyword, argv); // execvp로 환경변수를 사용하지 않았는데, 추후 수정 필요
+    perror("exec failed");
+    exit(127);  // command not found 에러
   }
 
-  // 3. 부모 프로세스는 자식 종료 대기
+  // 부모 프로세스는 자식 종료 대기(& 입력 안 했을 때)
   int status;
   waitpid(pid, &status, 0);
 
-  // 4. 종료 코드 확인
+  // 종료 상태 확인
   ExecResult result = EXEC_OK;
   if (WIFEXITED(status)) {
     int exitCode = WEXITSTATUS(status);
     if (exitCode != 0) {
       result = EXEC_ERROR;
     }
-  } else {
+  } else {  //자식 프로세스가 exit, return으로 종료되지 않아 status가 없는 경우
     result = EXEC_ERROR;
   }
 
-  // 5. 메모리 정리
+  // 메모리 할당 해제
   for (int j = 0; j < i; j++) {
     free(argv[j]);
   }
