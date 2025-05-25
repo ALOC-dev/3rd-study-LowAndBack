@@ -29,4 +29,17 @@ void builtin_exit(ParsedCommand* cmd);
 void builtin_cd(ParsedCommand* cmd);
 void builtin_type(ParsedCommand* cmd);
 
+// executor
+void execute_builtin(ParsedCommand* cmd);
+
+typedef void (*BuiltinFunc)(ParsedCommand*);
+
+typedef struct builtin_func{
+    const char* name;
+    BuiltinFunc func;
+} b_func;
+
+extern b_func builtins[];
+
+
 #endif
