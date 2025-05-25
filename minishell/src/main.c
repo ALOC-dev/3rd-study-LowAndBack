@@ -3,6 +3,7 @@
 #include <string.h>
 #include "parser.h"
 #include "builtin.h"
+#include "executor.h"
 
 int main(void) {
     char line[1024];
@@ -20,7 +21,7 @@ int main(void) {
         // 파싱
         ParsedCommand *cmd = parse_input(line);
         //print_parsed_command(cmd);
-        run_builtin(cmd);
+        execute_command(cmd);
         
         // 메모리 해제
         free_parsed_command(cmd);
