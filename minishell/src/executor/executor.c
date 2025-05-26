@@ -1,10 +1,9 @@
-#include <minishell.h>
-
+#include "executor.h"
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 
 void execute_commands(t_command *cmd_list) {
     t_command *cmd = cmd_list;
