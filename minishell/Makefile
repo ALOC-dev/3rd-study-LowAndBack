@@ -12,7 +12,8 @@ CFLAGS = -Wall -Wextra -Werror -Iinclude
 SRCS = \
 	src/main.c \
 	src/builtin/builtin.c \
-	src/parser/parser.c
+	src/parser/parser.c \
+	src/executor/executor.c
 
 # 오브젝트 파일
 OBJS = $(SRCS:.c=.o)
