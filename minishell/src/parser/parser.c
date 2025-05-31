@@ -1,20 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "parser.h"
 
-typedef struct ArgNode {
-    char *arg;
-    struct ArgNode *next;
-} ArgNode;
-
-// 파싱된 명령어를 담는 구조체
-typedef struct ParsedCommand {
-    char *keyword;      // 첫 단어 (명령어)
-    ArgNode *args;      // 인자들 연결 리스트
-    int argc;           // 인자 개수
-} ParsedCommand;
-
-// 인자 리스트에 새 인자 추가
 void add_arg(ParsedCommand *cmd, const char *arg_str) {
     ArgNode *new_node = malloc(sizeof(ArgNode));
     new_node->arg = strdup(arg_str);
@@ -27,60 +15,92 @@ void add_arg(ParsedCommand *cmd, const char *arg_str) {
         while (cur->next != NULL)
             cur = cur->next;
         cur->next = new_node;
-    } cmd->argc++;
+    }
+    cmd->argc++;
 }
 
 void free_parsed_command(ParsedCommand *cmd) {
-    if (!cmd) return;
-    ArgNode *cur = cmd->args;
-    while (cur) {
-        ArgNode *next = cur->next;
-        free(cur->arg);
-        free(cur);
-        cur = next;
+    while (cmd) {
+        ParsedCommand *next_cmd = cmd->next;
+        ArgNode *cur = cmd->args;
+        while (cur) {
+            ArgNode *next = cur->next;
+            free(cur->arg);
+            free(cur);
+            cur = next;
+        }
+        free(cmd->keyword);
+        free(cmd->infile);
+        free(cmd->outfile);
+        free(cmd->appendfile);
+        free(cmd);
+        cmd = next_cmd;
     }
-    free(cmd->keyword);
-    free(cmd);
 }
 
-// 입력 문자열을 구조체로 변환
 ParsedCommand *parse_input(const char *input) {
     char *input_copy = strdup(input);
     char *token = strtok(input_copy, " ");
+    ParsedCommand *head = NULL, *current = NULL;
 
-    if (token == NULL) {
-        free(input_copy);
-        return NULL;
-    }
+    while (token != NULL) {
+        ParsedCommand *cmd = calloc(1, sizeof(ParsedCommand));
+        cmd->argc = 0;
+        cmd->args = NULL;
+        cmd->infile = NULL;
+        cmd->outfile = NULL;
+        cmd->appendfile = NULL;
+        cmd->next = NULL;
 
-    // 구조체 초기화
-    ParsedCommand *cmd = malloc(sizeof(ParsedCommand));
-    cmd->keyword = strdup(token);
-    cmd->args = NULL;
-    cmd->argc = 0;
-
-    // 나머지 토큰은 인자로 처리
-    while ((token = strtok(NULL, " ")) != NULL) {
+        if (token == NULL) break;
+        cmd->keyword = strdup(token);
         add_arg(cmd, token);
+
+        while ((token = strtok(NULL, " ")) != NULL) {
+            if (strcmp(token, "|") == 0) {
+                token = strtok(NULL, " ");
+                break;
+            } else if (strcmp(token, "<") == 0) {
+                token = strtok(NULL, " ");
+                if (token) cmd->infile = strdup(token);
+            } else if (strcmp(token, ">>") == 0) {
+                token = strtok(NULL, " ");
+                if (token) cmd->appendfile = strdup(token);
+            } else if (strcmp(token, ">") == 0) {
+                token = strtok(NULL, " ");
+                if (token) cmd->outfile = strdup(token);
+            } else {
+                add_arg(cmd, token);
+            }
+        }
+
+        if (head == NULL) {
+            head = cmd;
+        } else {
+            current->next = cmd;
+        }
+        current = cmd;
     }
 
     free(input_copy);
-    return cmd;
+    return head;
 }
 
-// 결과 출력
 void print_command(ParsedCommand *cmd) {
-    if (cmd == NULL) {
-        printf("No command parsed.\n");
-        return;
-    }
-
-    printf("Keyword: %s\n", cmd->keyword);
-    printf("Arg count: %d\n", cmd->argc);
-
-    ArgNode *cur = cmd->args;
-    while (cur != NULL) {
-        printf("Arg: %s\n", cur->arg);
-        cur = cur->next;
+    int i = 1;
+    while (cmd) {
+        printf("[Command %d]\n", i++);
+        printf("  Keyword: %s\n", cmd->keyword);
+        printf("  Args (%d):", cmd->argc);
+        ArgNode *cur = cmd->args;
+        while (cur) {
+            printf(" %s", cur->arg);
+            cur = cur->next;
+        }
+        printf("\n");
+        if (cmd->infile)     printf("  Input Redirect: %s\n", cmd->infile);
+        if (cmd->outfile)    printf("  Output Redirect: %s\n", cmd->outfile);
+        if (cmd->appendfile) printf("  Append Redirect: %s\n", cmd->appendfile);
+        cmd = cmd->next;
     }
 }
