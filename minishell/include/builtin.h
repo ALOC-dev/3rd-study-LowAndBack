@@ -22,5 +22,6 @@ int builtin_exit(char *const args[]);
 int builtin_pwd(char *const args[]);
 int builtin_echo(char *const args[]);
 int builtin_type(char *const args[]);
+int builtin_type(char *const args[]);
 
 #endif // BUILTIN_H
