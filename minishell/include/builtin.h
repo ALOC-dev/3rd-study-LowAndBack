@@ -13,6 +13,6 @@ void run_builtin(t_command *cmd);
 void ft_echo(t_command *cmd);
 void ft_pwd(void);
 void ft_cd(t_command *cmd);
-void ft_exit(void);
+void ft_exit(t_command *cmd); 
 
 #endif
