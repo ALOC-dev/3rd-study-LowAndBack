@@ -10,9 +10,15 @@ typedef struct ParsedCommand {
     char *keyword;
     ArgNode *args;
     int argc;
-    struct ParsedCommand *next; // 명령어가 여러 줄 들어오거나, pipe가 있을 때 사용
+
+    char *inputFile;
+    char *outputFile;
+    int isAppend;
+
+    struct ParsedCommand *next;
 } ParsedCommand;
 
+ParsedCommand *parseSingleCommand(char *commandStr);
 ParsedCommand *parseCommand(char *input);
 void freeParsedCommand(ParsedCommand *command);
 void printParsedCommand(const ParsedCommand *command);  //디버깅용

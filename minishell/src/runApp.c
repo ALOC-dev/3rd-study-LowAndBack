@@ -1,16 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "../include/parser.h"
 #include "../include/execResult.h"
-#include "../include/builtinList.h"
 #include "../include/builtin.h"
 #include "../include/executor.h"
 #include "../include/utils.h"
-
-#define true 1
-#define false 0
 
 // 입력을 버퍼에 저장
 char *readLine() {
@@ -48,26 +45,22 @@ char *readLine() {
   return buffer;
 }
 
-int isBuiltin(const char *keyword) {
-  int builtinCount = sizeof(builtinList) / sizeof(builtinList[0]);
-  for (int i = 0; i < builtinCount; i++) {
-    if (strcmp(keyword, builtinList[i]) == 0) {
-      return true;  // 내장 명령어
-    }
-  }
-  return false;  // 외장 명령어
-}
-
 int runApp(int argc, char **argv, char **envp) {
-  while (true) {
+  while (1) {
     // 프롬프트 출력
     printf("minishell > ");
     fflush(stdout);
 
     // 입력을 읽은 뒤 parsing
     char *input = readLine();
+
     char *inputCopy = strdup(input);  // testParsingCommand()에서 사용
     ParsedCommand *command = parseCommand(input);
+    if (!command) {
+      free(inputCopy);
+      free(input);
+      continue;
+    }
 
     // 디버깅용
     if (strcmp(command->keyword, "ptest") == 0) {
@@ -82,13 +75,16 @@ int runApp(int argc, char **argv, char **envp) {
     ExecResult result;
     if (isBuiltin(command->keyword)) {
       result = executeBuiltin(command);
-    } else {
+    } else if (isExternalCommand(command->keyword)) {
       result = executeExternal(command);
+    } else {
+      fprintf(stderr, "%s: command not found\n", command->keyword);
+      result = EXEC_ERROR;
     }
 
     // 명령어 실행 실패
     if (result == EXEC_ERROR) {
-      fprintf(stderr, "Error occured while executing command: %s\n", command->keyword);
+      //fprintf(stderr, "Error occured while executing command: %s\n", command->keyword); // 중복으로 뜸 -> 나중에 에러 처리 잘 할 것
     }
 
     // 메모리 할당 해제
