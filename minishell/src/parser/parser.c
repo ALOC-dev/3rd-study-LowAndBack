@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// 문자열 공백 기준 분할
 char **split_tokens(char *line, int *argc_out) {
     char **tokens = malloc(sizeof(char*) * 100);
     if (!tokens) {
@@ -23,7 +22,6 @@ char **split_tokens(char *line, int *argc_out) {
     return tokens;
 }
 
-// 단일 명령어 세그먼트 처리
 t_command *parse_segment(char *segment) {
     t_command *cmd = malloc(sizeof(t_command));
     if (!cmd) {
@@ -49,12 +47,15 @@ t_command *parse_segment(char *segment) {
     cmd->infile = NULL;
     cmd->outfile = NULL;
     cmd->next = NULL;
+    cmd->background = 0;
 
     for (int i = 0; i < argc; i++) {
         if (strcmp(tokens[i], "<") == 0 && i + 1 < argc) {
             cmd->infile = strdup(tokens[++i]);
         } else if (strcmp(tokens[i], ">") == 0 && i + 1 < argc) {
             cmd->outfile = strdup(tokens[++i]);
+        } else if (strcmp(tokens[i], "&") == 0 && i == argc - 1) {
+            cmd->background = 1;  // 마지막 토큰이 & 인 경우
         } else {
             if (!cmd->keyword) {
                 cmd->keyword = strdup(tokens[i]);
@@ -63,11 +64,11 @@ t_command *parse_segment(char *segment) {
             }
         }
     }
+
     cmd->args[cmd->argc] = NULL;
     return cmd;
 }
 
-// 입력 문자열 전체 파싱 (파이프 구분)
 t_command *parse_input(char *input) {
     t_command *head = NULL;
     t_command *curr = NULL;
@@ -92,7 +93,6 @@ t_command *parse_input(char *input) {
     return head;
 }
 
-// 디버깅용 출력
 void print_commands(t_command *cmd) {
     int count = 1;
     while (cmd) {
@@ -105,11 +105,12 @@ void print_commands(t_command *cmd) {
             printf("Input  : %s\n", cmd->infile);
         if (cmd->outfile)
             printf("Output : %s\n", cmd->outfile);
+        if (cmd->background)
+            printf("Run in background: yes\n");
         cmd = cmd->next;
     }
 }
 
-// 메모리 해제
 void free_commands(t_command *cmd) {
     while (cmd) {
         t_command *next = cmd->next;

@@ -2,13 +2,15 @@
 # define PARSER_H
 
 typedef struct s_command {
-    char *keyword;              // 첫 토큰: 명령어
-    char **args;                // 나머지 인자들
-    int argc;                   // 인자 개수
+    char *keyword;
+    char **args;
+    int argc;
     char *infile;
     char *outfile;
+    int background;              // 추가: 백그라운드 실행 여부
     struct s_command *next;
 } t_command;
+
 
 t_command *parse_input(char *input);
 void print_commands(t_command *cmd);

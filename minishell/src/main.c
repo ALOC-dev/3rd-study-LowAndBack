@@ -1,4 +1,10 @@
 #include "minishell.h"
+#include <signal.h>
+
+void handle_sigint(int sig) {
+    (void)sig;
+    write(STDOUT_FILENO, "\nminishell$ ", 12);
+}
 
 void repl_loop(void) {
     char input[1024];
@@ -10,28 +16,24 @@ void repl_loop(void) {
             break;
         }
 
+        // 비어있는 입력은 무시
+        if (input[0] == '\n')
+            continue;
+
         t_command *cmd_list = parse_input(input);
-        t_command *curr = cmd_list;
+        if (!cmd_list)
+            continue;
 
-        while (curr) {
-            if (curr->keyword == NULL) {
-                curr = curr->next;
-                continue;
-            }
-
-            if (is_builtin(curr->keyword))
-                run_builtin(curr);
-            else
-                printf("외부 명령 실행: %s (여기서는 처리 안 함)\n", curr->keyword);
-
-            curr = curr->next;
-        }
-
+        execute_all(cmd_list);
         free_commands(cmd_list);
     }
 }
 
 int main(void) {
+    // 시그널 처리: Ctrl+C 시 새 프롬프트 표시
+    signal(SIGINT, handle_sigint);
+    signal(SIGQUIT, SIG_IGN);  // Ctrl+\ 무시
+
     repl_loop();
     return 0;
 }

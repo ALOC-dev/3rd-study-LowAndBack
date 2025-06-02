@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 int is_builtin(char *cmd) {
     return (
@@ -21,16 +21,33 @@ void run_builtin(t_command *cmd) {
     else if (strcmp(cmd->keyword, "cd") == 0)
         ft_cd(cmd);
     else if (strcmp(cmd->keyword, "exit") == 0)
-        ft_exit();
+        ft_exit(cmd);
 }
 
 void ft_echo(t_command *cmd) {
-    for (int i = 0; i < cmd->argc; i++) {
-        printf("%s", cmd->args[i]);
+    int newline = 1;
+    int i = 0;
+
+    // -n 옵션 체크
+    if (cmd->argc > 0 && strcmp(cmd->args[0], "-n") == 0) {
+        newline = 0;
+        i = 1;
+    }
+
+    for (; i < cmd->argc; i++) {
+        // 환경 변수 확장
+        if (cmd->args[i][0] == '$') {
+            char *val = getenv(cmd->args[i] + 1);  // $VAR → VAR
+            if (val)
+                printf("%s", val);
+        } else {
+            printf("%s", cmd->args[i]);
+        }
         if (i < cmd->argc - 1)
             printf(" ");
     }
-    printf("\n");
+    if (newline)
+        printf("\n");
 }
 
 void ft_pwd(void) {
@@ -42,15 +59,26 @@ void ft_pwd(void) {
 }
 
 void ft_cd(t_command *cmd) {
+    const char *path;
     if (cmd->argc < 1) {
-        fprintf(stderr, "cd: missing argument\n");
-        return;
+        path = getenv("HOME");
+        if (!path) {
+            fprintf(stderr, "cd: HOME not set\n");
+            return;
+        }
+    } else {
+        path = cmd->args[0];
     }
-    if (chdir(cmd->args[0]) != 0)
+
+    if (chdir(path) != 0)
         perror("cd");
 }
 
-void ft_exit(void) {
+void ft_exit(t_command *cmd) {
+    int status = 0;
+    if (cmd->argc >= 1)
+        status = atoi(cmd->args[0]);
+
     printf("exit\n");
-    exit(0);
+    exit(status);
 }
