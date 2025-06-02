@@ -1,8 +1,9 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-# include "parser.h"
+# include "minishell.h"
 
-void execute_commands(t_command *cmd_list);
+void execute_all(t_command *cmd_list);
+void execute_command(t_command *cmd);
 
 #endif

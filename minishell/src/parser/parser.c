@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-// 문자열을 공백 기준으로 나누는 함수
+// 문자열 공백 기준 분할
 char **split_tokens(char *line, int *argc_out) {
     char **tokens = malloc(sizeof(char*) * 100);
     if (!tokens) {
@@ -24,57 +23,76 @@ char **split_tokens(char *line, int *argc_out) {
     return tokens;
 }
 
-// 파서: 파이프(|) 기준으로 명령어 단위로 나눈 뒤, 연결 리스트 생성
+// 단일 명령어 세그먼트 처리
+t_command *parse_segment(char *segment) {
+    t_command *cmd = malloc(sizeof(t_command));
+    if (!cmd) {
+        perror("malloc");
+        exit(1);
+    }
+
+    int argc;
+    char **tokens = split_tokens(segment, &argc);
+    if (argc == 0) {
+        free(cmd);
+        return NULL;
+    }
+
+    cmd->args = malloc(sizeof(char*) * 100);
+    if (!cmd->args) {
+        perror("malloc");
+        exit(1);
+    }
+
+    cmd->keyword = NULL;
+    cmd->argc = 0;
+    cmd->infile = NULL;
+    cmd->outfile = NULL;
+    cmd->next = NULL;
+
+    for (int i = 0; i < argc; i++) {
+        if (strcmp(tokens[i], "<") == 0 && i + 1 < argc) {
+            cmd->infile = strdup(tokens[++i]);
+        } else if (strcmp(tokens[i], ">") == 0 && i + 1 < argc) {
+            cmd->outfile = strdup(tokens[++i]);
+        } else {
+            if (!cmd->keyword) {
+                cmd->keyword = strdup(tokens[i]);
+            } else {
+                cmd->args[cmd->argc++] = strdup(tokens[i]);
+            }
+        }
+    }
+    cmd->args[cmd->argc] = NULL;
+    return cmd;
+}
+
+// 입력 문자열 전체 파싱 (파이프 구분)
 t_command *parse_input(char *input) {
     t_command *head = NULL;
     t_command *curr = NULL;
 
     char *segment = strtok(input, "|");
     while (segment != NULL) {
-        t_command *cmd = malloc(sizeof(t_command));
+        t_command *cmd = parse_segment(segment);
         if (!cmd) {
-            perror("malloc");
-            exit(1);
-        }
-
-        int argc;
-        char **tokens = split_tokens(segment, &argc);
-
-        if (argc == 0) {
-            free(cmd);
             segment = strtok(NULL, "|");
             continue;
         }
 
-        cmd->keyword = tokens[0];              // 첫 번째 토큰 → keyword
-        cmd->argc = argc - 1;                  // 나머지 토큰 개수
-        cmd->args = malloc(sizeof(char*) * (cmd->argc + 1));
-        if (!cmd->args) {
-            perror("malloc");
-            exit(1);
-        }
-
-        for (int i = 1; i < argc; i++)
-            cmd->args[i - 1] = tokens[i];
-        cmd->args[cmd->argc] = NULL;
-
-        cmd->infile = NULL;
-        cmd->outfile = NULL;
-        cmd->next = NULL;
-
-        if (head == NULL)
+        if (!head)
             head = cmd;
         else
             curr->next = cmd;
-
         curr = cmd;
+
         segment = strtok(NULL, "|");
     }
 
     return head;
 }
 
-// 파싱된 명령어들 출력
+// 디버깅용 출력
 void print_commands(t_command *cmd) {
     int count = 1;
     while (cmd) {
@@ -83,16 +101,26 @@ void print_commands(t_command *cmd) {
         for (int i = 0; i < cmd->argc; i++) {
             printf("Arg[%d]: %s\n", i, cmd->args[i]);
         }
+        if (cmd->infile)
+            printf("Input  : %s\n", cmd->infile);
+        if (cmd->outfile)
+            printf("Output : %s\n", cmd->outfile);
         cmd = cmd->next;
     }
 }
 
-// 동적 메모리 해제
+// 메모리 해제
 void free_commands(t_command *cmd) {
     while (cmd) {
         t_command *next = cmd->next;
-        free(cmd->args);      // args 자체만 free (내부는 원래 문자열 토큰)
-        free(cmd);            // 구조체 free
+        if (cmd->keyword)
+            free(cmd->keyword);
+        for (int i = 0; i < cmd->argc; i++)
+            free(cmd->args[i]);
+        free(cmd->args);
+        free(cmd->infile);
+        free(cmd->outfile);
+        free(cmd);
         cmd = next;
     }
 }
