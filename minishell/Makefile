@@ -13,7 +13,8 @@ SRCS = \
 	src/main.c \
 	src/builtin/builtin.c \
 	src/parser/parser.c \
-	src/executor/executor.c
+	src/executor/executor.c \
+	src/utils/utils.c
 
 # 오브젝트 파일 목록 (build 디렉토리에 저장)
 OBJS = $(SRCS:.c=.o)
