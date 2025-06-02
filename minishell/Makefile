@@ -15,21 +15,22 @@ SRCS = \
 	src/parser/parser.c \
 	src/executor/executor.c
 
-# 오브젝트 파일
+# 오브젝트 파일 목록 (build 디렉토리에 저장)
 OBJS = $(SRCS:.c=.o)
 
 # 기본 규칙
 all: $(NAME)
 
-# 실행 파일 링크
+# 실행 파일 생성
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
-# 객체 파일 규칙
+# .o 파일 생성 규칙 (중첩 디렉토리 대응)
 %.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# 클린
+# 정리
 clean:
 	rm -f $(OBJS)
 
