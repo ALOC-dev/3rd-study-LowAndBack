@@ -1,11 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>   
 #include "parser.h"
 
 void add_arg(ParsedCommand *cmd, const char *arg_str) {
     ArgNode *new_node = malloc(sizeof(ArgNode));
-    new_node->arg = strdup(arg_str);
+    if (arg_str[0] == '$') {
+        char *env_val = getenv(arg_str + 1); // 환경변수 처리
+        new_node->arg = env_val ? strdup(env_val) : strdup("");
+    } else {
+        new_node->arg = strdup(arg_str);
+    }
     new_node->next = NULL;
 
     if (cmd->args == NULL) {
@@ -50,6 +56,7 @@ ParsedCommand *parse_input(const char *input) {
         cmd->infile = NULL;
         cmd->outfile = NULL;
         cmd->appendfile = NULL;
+        cmd->is_background = 0; //백그라운드 실행 여부
         cmd->next = NULL;
 
         if (token == NULL) break;
@@ -69,6 +76,8 @@ ParsedCommand *parse_input(const char *input) {
             } else if (strcmp(token, ">") == 0) {
                 token = strtok(NULL, " ");
                 if (token) cmd->outfile = strdup(token);
+            } else if (strcmp(token, "&") == 0) {
+                cmd->is_background = 1; // <- '&' 감지 시 백그라운드 플래그 설정
             } else {
                 add_arg(cmd, token);
             }
@@ -101,6 +110,7 @@ void print_command(ParsedCommand *cmd) {
         if (cmd->infile)     printf("  Input Redirect: %s\n", cmd->infile);
         if (cmd->outfile)    printf("  Output Redirect: %s\n", cmd->outfile);
         if (cmd->appendfile) printf("  Append Redirect: %s\n", cmd->appendfile);
+        if (cmd->is_background) printf("  Background Execution: YES\n");
         cmd = cmd->next;
     }
 }

@@ -1,20 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <parser.h>
-#include <executor.h>
+#include <unistd.h>
+#include <signal.h>
+#include "parser.h"
+#include "executor.h"
+
 
 int main() {
     char input[1024];
 
+   void setup_signal_handlers();
+
     while (1) {
         printf("minishell> ");
+        fflush(stdout);
+
         if (fgets(input, sizeof(input), stdin) == NULL) {
             printf("\n");
             break;
         }
 
-        input[strcspn(input, "\n")] = '\0';
+        input[strcspn(input, "\n")] = '\0';  
+
         if (strlen(input) == 0)
             continue;
 
@@ -27,7 +35,7 @@ int main() {
         int status = execute_command(cmd);
         free_parsed_command(cmd);
 
-        if (status == -1) // exit 명령어
+        if (status == -1) 
             break;
     }
 

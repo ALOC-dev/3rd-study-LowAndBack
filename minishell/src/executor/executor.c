@@ -4,8 +4,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "executor.h"
-#include "builtin.h"  
+#include "builtin.h"
 
 void execute_single_command(ParsedCommand *cmd) {
     char **args = malloc(sizeof(char *) * (cmd->argc + 1));
@@ -22,7 +23,7 @@ void execute_single_command(ParsedCommand *cmd) {
     }
     args[i] = NULL;
 
-    // 리다이렉션
+    // 리다이렉션 처리
     if (cmd->infile) {
         int fd = open(cmd->infile, O_RDONLY);
         if (fd < 0) {
@@ -88,8 +89,9 @@ int execute_command(ParsedCommand *cmd) {
     pid_t pid;
     int status;
 
-    while (cmd) {
-        if (cmd->next) {
+    ParsedCommand *current = cmd;
+    while (current) {
+        if (current->next) {
             if (pipe(fd) < 0) {
                 perror("pipe failed");
                 exit(EXIT_FAILURE);
@@ -108,36 +110,42 @@ int execute_command(ParsedCommand *cmd) {
                 exit(EXIT_FAILURE);
             }
 
-            if (cmd->next && !cmd->outfile && !cmd->appendfile) {
+            if (current->next && !current->outfile && !current->appendfile) {
                 if (dup2(fd[1], STDOUT_FILENO) < 0) {
                     perror("dup2 pipe write");
                     exit(EXIT_FAILURE);
                 }
             }
 
-            if (cmd->next) {
+            if (in_fd != STDIN_FILENO)
+                close(in_fd);
+            if (current->next) {
                 close(fd[0]);
                 close(fd[1]);
             }
-            if (in_fd != STDIN_FILENO) close(in_fd);
 
-            execute_single_command(cmd);
+            execute_single_command(current);
         } else {
             // 부모 프로세스
 
-            if (in_fd != STDIN_FILENO) close(in_fd);
-
-            if (cmd->next) {
+            if (in_fd != STDIN_FILENO)
+                close(in_fd);
+            if (current->next) {
                 close(fd[1]);
                 in_fd = fd[0];
             }
-
-            cmd = cmd->next;
         }
+
+        current = current->next;
     }
 
-    // 모든 자식 프로세스 기다리기
-    while (wait(&status) > 0);
+    // 백그라운드 여부 확인
+    if (!cmd->is_background) {
+        // 포그라운드 실행이면 wait
+        while (wait(&status) > 0);
+    } else {
+        printf("[BG] pid: %d\n", pid);
+    }
 
     return 0;
 }

@@ -13,6 +13,7 @@ typedef struct ParsedCommand {
     char *infile;
     char *outfile;
     char *appendfile;
+    int is_background; 
     struct ParsedCommand *next;
 } ParsedCommand;
 
