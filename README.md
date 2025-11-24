@@ -115,8 +115,8 @@ minishell/
 git clone https://github.com/ALOC-dev/3rd-study-LowAndBack.git
 
 # 2. 빌드
-cd shell
+cd minishell
 make
 
 # 3. 실행
-./myshell
+./minishell
